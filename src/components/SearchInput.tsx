@@ -16,7 +16,6 @@ export const SearchInput: React.FC<SearchInputProps> = ({ query, active }) => {
 
   return (
     <Box
-      marginY={1}
       borderStyle="round"
       borderColor={active ? 'cyan' : 'gray'}
       paddingX={1}

@@ -278,7 +278,7 @@ export const App: React.FC<AppProps> = ({ player }) => {
 
   return (
     <Box flexDirection="column" height="100%" padding={1}>
-      <Box marginBottom={1}>
+      <Box>
         <Text bold color="green">
           🎵 RadioCrestin.ro CLI Player
         </Text>

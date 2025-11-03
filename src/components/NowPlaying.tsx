@@ -14,7 +14,7 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({ station, paused, volume 
 
   if (!station) {
     return (
-      <Box borderStyle="round" borderColor="gray" paddingX={1} marginY={1} width={terminalWidth - 4}>
+      <Box borderStyle="round" borderColor="gray" paddingX={1} width={terminalWidth - 4}>
         <Text color="gray">No station playing - Press Enter to select a station</Text>
       </Box>
     );
@@ -46,7 +46,6 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({ station, paused, volume 
       borderStyle="round"
       borderColor={paused ? 'yellow' : 'green'}
       paddingX={1}
-      marginY={1}
       flexDirection="column"
       width={terminalWidth - 4}
     >
@@ -66,7 +65,7 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({ station, paused, volume 
         <Text color="cyan">{volumeBar}</Text>
         <Text color="gray"> {volume}%</Text>
       </Box>
-      <Box marginTop={1}>
+      <Box>
         <Text dimColor color="gray">
           Listeners: {station.total_listeners} | Status:{' '}
           {station.uptime.is_up ? (
