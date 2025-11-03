@@ -44,6 +44,10 @@ export const Help: React.FC = () => {
         <Text> - Pause/Resume</Text>
       </Box>
       <Box>
+        <Text color="gray">Media Next/Prev</Text>
+        <Text> - Next/Previous station</Text>
+      </Box>
+      <Box>
         <Text color="gray">f</Text>
         <Text> - Toggle favorite (saved & shown at top)</Text>
       </Box>
@@ -58,6 +62,11 @@ export const Help: React.FC = () => {
       <Box>
         <Text color="gray">Type</Text>
         <Text> - Search stations</Text>
+      </Box>
+      <Box marginLeft={2}>
+        <Text dimColor color="gray">
+          (While searching, only navigation, Enter, and Esc work)
+        </Text>
       </Box>
       <Box>
         <Text color="gray">? or h</Text>

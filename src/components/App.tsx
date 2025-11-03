@@ -288,13 +288,21 @@ export const App: React.FC<AppProps> = ({ player }) => {
 
   // Keyboard input handler
   useInput((input, key) => {
-    // Quit
+    // Quit (always available)
     if (input === 'q' || (key.ctrl && input === 'c')) {
       handleQuit();
       return;
     }
 
-    // Navigation
+    // Escape (always available) - clear search/help
+    if (key.escape) {
+      setSearchQuery('');
+      setSearchActive(false);
+      setShowHelp(false);
+      return;
+    }
+
+    // Navigation (always available)
     if (key.upArrow || input === 'k') {
       setSelectedIndex((prev) => Math.max(0, prev - 1));
       return;
@@ -307,11 +315,36 @@ export const App: React.FC<AppProps> = ({ player }) => {
       return;
     }
 
-    // Play selected station
+    // Play selected station (always available)
     if (key.return) {
       handlePlayStation(filteredStations[selectedIndex]);
       return;
     }
+
+    // Backspace/Delete for search (always available)
+    if (key.backspace || key.delete) {
+      if (searchQuery.length > 0) {
+        setSearchQuery((prev) => {
+          const newQuery = prev.slice(0, -1);
+          if (newQuery.length === 0) {
+            setSearchActive(false);
+          }
+          return newQuery;
+        });
+      }
+      return;
+    }
+
+    // When search is active, disable other shortcuts and capture input
+    if (searchActive) {
+      // Alphanumeric input for search
+      if (input && /^[a-zA-Z0-9 ]$/.test(input)) {
+        setSearchQuery((prev) => prev + input);
+      }
+      return;
+    }
+
+    // Below shortcuts only work when search is NOT active
 
     // Pause/Resume
     if (input === ' ') {
@@ -348,28 +381,7 @@ export const App: React.FC<AppProps> = ({ player }) => {
       return;
     }
 
-    // Search
-    if (key.escape) {
-      setSearchQuery('');
-      setSearchActive(false);
-      setShowHelp(false);
-      return;
-    }
-
-    if (key.backspace || key.delete) {
-      if (searchQuery.length > 0) {
-        setSearchQuery((prev) => {
-          const newQuery = prev.slice(0, -1);
-          if (newQuery.length === 0) {
-            setSearchActive(false);
-          }
-          return newQuery;
-        });
-      }
-      return;
-    }
-
-    // Alphanumeric input for search
+    // Alphanumeric input for search (when search is not active)
     if (input && /^[a-zA-Z0-9 ]$/.test(input)) {
       setSearchActive(true);
       setSearchQuery((prev) => prev + input);
