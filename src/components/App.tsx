@@ -55,15 +55,40 @@ export const App: React.FC<AppProps> = ({ player }) => {
 
     loadStations();
 
-    // Set up metadata refresh interval
-    const metadataInterval = setInterval(async () => {
-      try {
-        const data = await fetchStations();
-        setStations(data);
-      } catch {
-        // Silently fail metadata refresh to avoid disrupting user experience
-      }
-    }, 10000); // Refresh every 10 seconds
+    // Set up metadata refresh interval aligned to 10s cache boundaries
+    let metadataInterval: NodeJS.Timeout | undefined;
+    let initialTimeout: NodeJS.Timeout | undefined;
+
+    const scheduleNextRefresh = () => {
+      // Calculate time until next 10-second boundary
+      const now = Date.now();
+      const nextSlot = Math.ceil(now / 10000) * 10000;
+      const delay = nextSlot - now;
+
+      initialTimeout = setTimeout(() => {
+        // Refresh metadata at the boundary
+        (async () => {
+          try {
+            const data = await fetchStations();
+            setStations(data);
+          } catch {
+            // Silently fail metadata refresh to avoid disrupting user experience
+          }
+        })();
+
+        // Schedule recurring refresh every 10 seconds
+        metadataInterval = setInterval(async () => {
+          try {
+            const data = await fetchStations();
+            setStations(data);
+          } catch {
+            // Silently fail metadata refresh to avoid disrupting user experience
+          }
+        }, 10000);
+      }, delay);
+    };
+
+    scheduleNextRefresh();
 
     // Set up player event listeners
     const handlePauseChanged = (isPaused: boolean) => {
@@ -79,7 +104,8 @@ export const App: React.FC<AppProps> = ({ player }) => {
     player.on('volume-changed', handleVolumeChanged);
 
     return () => {
-      clearInterval(metadataInterval);
+      if (initialTimeout) clearTimeout(initialTimeout);
+      if (metadataInterval) clearInterval(metadataInterval);
       player.off('pause-changed', handlePauseChanged);
       player.off('volume-changed', handleVolumeChanged);
     };
