@@ -1,7 +1,7 @@
 export interface StationStream {
-  id: number;
+  id?: number;
   type: string;
-  url: string;
+  stream_url: string;
   order: number;
 }
 

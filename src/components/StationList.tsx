@@ -7,6 +7,8 @@ interface StationListProps {
   selectedIndex: number;
   currentStationSlug: string | null;
   favorites: string[];
+  hasStation: boolean;
+  searchActive: boolean;
 }
 
 export const StationList: React.FC<StationListProps> = ({
@@ -14,14 +16,30 @@ export const StationList: React.FC<StationListProps> = ({
   selectedIndex,
   currentStationSlug,
   favorites,
+  hasStation,
+  searchActive,
 }) => {
   const { stdout } = useStdout();
   const terminalWidth = stdout?.columns || 80;
   const terminalHeight = stdout?.rows || 24;
 
   // Calculate available height for station list
-  // Account for: header (3), now playing (6), search (3), footer (3), margins
-  const listHeight = Math.max(5, terminalHeight - 15);
+  // Height breakdown:
+  // - App padding: 2 (top + bottom)
+  // - Title with margin: 2 (1 line + 1 margin)
+  // - NowPlaying: 5 (no station) or 8 (with station)
+  // - SearchInput: 0 (hidden) or 5 (shown)
+  // - Station list header: 3 (title + margins)
+  // - Footer: 4 (1 margin + 3 with border)
+  const overhead =
+    2 + // App padding
+    2 + // Title
+    (hasStation ? 8 : 5) + // NowPlaying
+    (searchActive ? 5 : 0) + // SearchInput
+    3 + // Station list header
+    4; // Footer
+
+  const listHeight = Math.max(5, terminalHeight - overhead);
 
   // Calculate visible window
   const { startIndex, endIndex } = useMemo(() => {

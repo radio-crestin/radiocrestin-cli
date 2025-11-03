@@ -38,7 +38,7 @@ export class StreamService {
         fallbackStreams.push({
           id: 1,
           type: 'direct',
-          url: station.stream_url,
+          stream_url: station.stream_url,
           order: 1,
         });
       }
@@ -47,7 +47,7 @@ export class StreamService {
         fallbackStreams.push({
           id: 2,
           type: 'hls',
-          url: station.hls_stream_url,
+          stream_url: station.hls_stream_url,
           order: 2,
         });
       }
@@ -56,7 +56,7 @@ export class StreamService {
         fallbackStreams.push({
           id: 3,
           type: 'proxy',
-          url: station.proxy_stream_url,
+          stream_url: station.proxy_stream_url,
           order: 3,
         });
       }
@@ -83,7 +83,7 @@ export class StreamService {
     const stream = streams[this.currentStreamIndex];
 
     try {
-      await this.player.loadStream(stream.url);
+      await this.player.loadStream(stream.stream_url);
       // Stream loaded successfully
       this.retryAttempts = 0;
     } catch (error) {
