@@ -85,7 +85,7 @@ export const App: React.FC<AppProps> = ({ player }) => {
       );
     }
 
-    // Sort: favorites first, then by listeners
+    // Sort: favorites first, then by order, then alphabetically
     filtered.sort((a, b) => {
       const aIsFav = favorites.includes(a.slug);
       const bIsFav = favorites.includes(b.slug);
@@ -93,7 +93,13 @@ export const App: React.FC<AppProps> = ({ player }) => {
       if (aIsFav && !bIsFav) return -1;
       if (!aIsFav && bIsFav) return 1;
 
-      return b.total_listeners - a.total_listeners;
+      // Sort by order field
+      if (a.order !== b.order) {
+        return a.order - b.order;
+      }
+
+      // For equal order values, sort alphabetically by title
+      return a.title.localeCompare(b.title);
     });
 
     setFilteredStations(filtered);

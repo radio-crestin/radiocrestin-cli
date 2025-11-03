@@ -27,6 +27,7 @@ export interface Uptime {
 export interface Station {
   id: number;
   slug: string;
+  order: number;
   title: string;
   description: string | null;
   stream_url: string;
