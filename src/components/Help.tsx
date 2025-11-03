@@ -45,7 +45,7 @@ export const Help: React.FC = () => {
       </Box>
       <Box>
         <Text color="gray">f</Text>
-        <Text> - Toggle favorite</Text>
+        <Text> - Toggle favorite (saved & shown at top)</Text>
       </Box>
       <Box>
         <Text color="gray">+/-</Text>
