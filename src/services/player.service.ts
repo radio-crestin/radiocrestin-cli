@@ -19,6 +19,7 @@ export class MpvPlayer extends EventEmitter {
   private mpvProcess: ChildProcess | null = null;
   private socket: net.Socket | null = null;
   private socketPath: string;
+  private inputConfPath: string;
   private mpvPath: string;
   private commandId = 0;
   private pendingCommands: Map<
@@ -43,10 +44,26 @@ export class MpvPlayer extends EventEmitter {
     super();
     this.mpvPath = mpvPath;
     this.socketPath = path.join(os.tmpdir(), `mpv-socket-${process.pid}`);
+    this.inputConfPath = path.join(
+      os.tmpdir(),
+      `mpv-input-${process.pid}.conf`
+    );
     this.state.volume = initialVolume;
   }
 
+  private async createInputConfig(): Promise<void> {
+    // Create input.conf file with media key bindings
+    const config = `# Media key bindings for station navigation
+NEXT script-message next-station
+PREV script-message prev-station
+`;
+    await fs.writeFile(this.inputConfPath, config, 'utf-8');
+  }
+
   async start(): Promise<void> {
+    // Create input config file for media key bindings
+    await this.createInputConfig();
+
     // Start MPV process with IPC server
     this.mpvProcess = spawn(this.mpvPath, [
       '--no-video',
@@ -54,6 +71,7 @@ export class MpvPlayer extends EventEmitter {
       '--idle=yes',
       `--input-ipc-server=${this.socketPath}`,
       '--input-media-keys=yes',
+      `--input-conf=${this.inputConfPath}`,
       `--volume=${this.initialVolume}`,
     ]);
 
@@ -155,9 +173,29 @@ export class MpvPlayer extends EventEmitter {
       this.handlePropertyChange(message);
     }
 
+    // Handle client-message events (for media keys)
+    if (message.event === 'client-message') {
+      this.handleClientMessage(message);
+    }
+
     // Handle other events
     if (message.event) {
       this.emit('mpv-event', message);
+    }
+  }
+
+  private handleClientMessage(message: any): void {
+    const args = message.args || [];
+    if (args.length === 0) return;
+
+    const command = args[0];
+    switch (command) {
+      case 'next-station':
+        this.emit('next-station');
+        break;
+      case 'prev-station':
+        this.emit('prev-station');
+        break;
     }
   }
 
@@ -289,6 +327,13 @@ export class MpvPlayer extends EventEmitter {
     // Clean up socket file
     try {
       await fs.unlink(this.socketPath);
+    } catch {
+      // Ignore errors
+    }
+
+    // Clean up input config file
+    try {
+      await fs.unlink(this.inputConfPath);
     } catch {
       // Ignore errors
     }

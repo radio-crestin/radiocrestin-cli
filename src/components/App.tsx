@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, useInput, useApp, useStdin } from 'ink';
 import { StationList } from './StationList.js';
 import { SearchInput } from './SearchInput.js';
@@ -31,6 +31,20 @@ export const App: React.FC<AppProps> = ({ player }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [streamService] = useState(() => new StreamService(player));
+
+  // Refs for accessing latest values in event handlers
+  const filteredStationsRef = useRef<Station[]>([]);
+  const currentStationRef = useRef<Station | null>(null);
+  const streamServiceRef = useRef(streamService);
+
+  // Update refs when values change
+  useEffect(() => {
+    filteredStationsRef.current = filteredStations;
+  }, [filteredStations]);
+
+  useEffect(() => {
+    currentStationRef.current = currentStation;
+  }, [currentStation]);
 
   // Load stations on mount
   useEffect(() => {
@@ -100,14 +114,80 @@ export const App: React.FC<AppProps> = ({ player }) => {
       favoritesService.setVolume(newVolume);
     };
 
+    const handleNextStation = async () => {
+      const filtered = filteredStationsRef.current;
+      const current = currentStationRef.current;
+
+      if (filtered.length === 0) return;
+
+      // Find current station in filtered list
+      const currentIndex = current
+        ? filtered.findIndex((s) => s.slug === current.slug)
+        : -1;
+
+      const nextIndex =
+        currentIndex >= 0 ? (currentIndex + 1) % filtered.length : 0;
+
+      // Update selected index and play the station
+      setSelectedIndex(nextIndex);
+      const nextStation = filtered[nextIndex];
+
+      try {
+        await streamServiceRef.current.playStation(nextStation);
+        setCurrentStation(nextStation);
+        setPaused(false);
+        favoritesService.setLastPlayed(nextStation.slug);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'Failed to play station'
+        );
+      }
+    };
+
+    const handlePrevStation = async () => {
+      const filtered = filteredStationsRef.current;
+      const current = currentStationRef.current;
+
+      if (filtered.length === 0) return;
+
+      // Find current station in filtered list
+      const currentIndex = current
+        ? filtered.findIndex((s) => s.slug === current.slug)
+        : -1;
+
+      const prevIndex =
+        currentIndex >= 0
+          ? (currentIndex - 1 + filtered.length) % filtered.length
+          : 0;
+
+      // Update selected index and play the station
+      setSelectedIndex(prevIndex);
+      const prevStation = filtered[prevIndex];
+
+      try {
+        await streamServiceRef.current.playStation(prevStation);
+        setCurrentStation(prevStation);
+        setPaused(false);
+        favoritesService.setLastPlayed(prevStation.slug);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'Failed to play station'
+        );
+      }
+    };
+
     player.on('pause-changed', handlePauseChanged);
     player.on('volume-changed', handleVolumeChanged);
+    player.on('next-station', handleNextStation);
+    player.on('prev-station', handlePrevStation);
 
     return () => {
       if (initialTimeout) clearTimeout(initialTimeout);
       if (metadataInterval) clearInterval(metadataInterval);
       player.off('pause-changed', handlePauseChanged);
       player.off('volume-changed', handleVolumeChanged);
+      player.off('next-station', handleNextStation);
+      player.off('prev-station', handlePrevStation);
     };
   }, [player]);
 
