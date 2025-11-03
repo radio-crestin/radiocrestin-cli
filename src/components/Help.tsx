@@ -76,7 +76,8 @@ export const Help: React.FC = () => {
           This project is open-source!
         </Text>
         <Text dimColor color="gray">
-          Suggest changes: <Text color="cyan">github.com/radio-crestin/radiocrestin-cli</Text>
+          Suggest changes:{' '}
+          <Text color="cyan">github.com/radio-crestin/radiocrestin-cli</Text>
         </Text>
       </Box>
     </Box>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { spawn, ChildProcess } from 'child_process';
 import net from 'net';
 import os from 'os';
@@ -20,7 +21,10 @@ export class MpvPlayer extends EventEmitter {
   private socketPath: string;
   private mpvPath: string;
   private commandId = 0;
-  private pendingCommands: Map<number, { resolve: (value: any) => void; reject: (error: any) => void }> = new Map();
+  private pendingCommands: Map<
+    number,
+    { resolve: (value: any) => void; reject: (error: any) => void }
+  > = new Map();
   private buffer = '';
 
   private state: PlayerState = {
@@ -32,7 +36,10 @@ export class MpvPlayer extends EventEmitter {
     position: null,
   };
 
-  constructor(mpvPath: string, private initialVolume: number = 75) {
+  constructor(
+    mpvPath: string,
+    private initialVolume: number = 75
+  ) {
     super();
     this.mpvPath = mpvPath;
     this.socketPath = path.join(os.tmpdir(), `mpv-socket-${process.pid}`);
@@ -123,7 +130,7 @@ export class MpvPlayer extends EventEmitter {
       try {
         const message = JSON.parse(line);
         this.handleMessage(message);
-      } catch (error) {
+      } catch {
         // Ignore parse errors
       }
     }

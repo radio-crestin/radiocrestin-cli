@@ -4,16 +4,26 @@ import path from 'path';
 import { createWriteStream, existsSync } from 'fs';
 import { pipeline } from 'stream/promises';
 import * as tar from 'tar';
-import { getPlatformInfo, getMpvCacheDir, type PlatformInfo } from '../utils/platform.js';
+import {
+  getPlatformInfo,
+  getMpvCacheDir,
+  type PlatformInfo,
+} from '../utils/platform.js';
 
 const MPV_DOWNLOAD_URLS = {
-  'win32-x64': 'https://sourceforge.net/projects/mpv-player-windows/files/64bit/mpv-x86_64-20240923-git-f0acc74.7z/download',
-  'darwin-x64': 'https://laboratory.stolendata.net/~djinn/mpv_osx/mpv-latest.tar.gz',
-  'darwin-arm64': 'https://laboratory.stolendata.net/~djinn/mpv_osx/mpv-latest.tar.gz',
-  'linux-x64': 'https://github.com/mpv-player/mpv/releases/download/v0.38.0/mpv-x86_64-linux-gnu.tar.gz',
+  'win32-x64':
+    'https://sourceforge.net/projects/mpv-player-windows/files/64bit/mpv-x86_64-20240923-git-f0acc74.7z/download',
+  'darwin-x64':
+    'https://laboratory.stolendata.net/~djinn/mpv_osx/mpv-latest.tar.gz',
+  'darwin-arm64':
+    'https://laboratory.stolendata.net/~djinn/mpv_osx/mpv-latest.tar.gz',
+  'linux-x64':
+    'https://github.com/mpv-player/mpv/releases/download/v0.38.0/mpv-x86_64-linux-gnu.tar.gz',
 };
 
-export async function downloadMpv(onProgress?: (progress: number) => void): Promise<string> {
+export async function downloadMpv(
+  onProgress?: (progress: number) => void
+): Promise<string> {
   const platformInfo = getPlatformInfo();
   const cacheDir = getMpvCacheDir();
   const downloadUrl = getMpvDownloadUrl(platformInfo);
@@ -21,7 +31,10 @@ export async function downloadMpv(onProgress?: (progress: number) => void): Prom
   // Create cache directory
   await fs.mkdir(cacheDir, { recursive: true });
 
-  const archivePath = path.join(cacheDir, `mpv-archive${getArchiveExtension(platformInfo)}`);
+  const archivePath = path.join(
+    cacheDir,
+    `mpv-archive${getArchiveExtension(platformInfo)}`
+  );
   const extractDir = path.join(cacheDir, 'extracted');
 
   // Download the archive
@@ -59,11 +72,14 @@ export async function downloadMpv(onProgress?: (progress: number) => void): Prom
 }
 
 function getMpvDownloadUrl(platformInfo: PlatformInfo): string {
-  const key = `${platformInfo.platform}-${platformInfo.arch}` as keyof typeof MPV_DOWNLOAD_URLS;
+  const key =
+    `${platformInfo.platform}-${platformInfo.arch}` as keyof typeof MPV_DOWNLOAD_URLS;
   const url = MPV_DOWNLOAD_URLS[key];
 
   if (!url) {
-    throw new Error(`No MPV download URL for platform: ${platformInfo.platform}-${platformInfo.arch}`);
+    throw new Error(
+      `No MPV download URL for platform: ${platformInfo.platform}-${platformInfo.arch}`
+    );
   }
 
   return url;
@@ -85,10 +101,10 @@ async function extractArchive(
     // TODO: Find a zip-based download or implement 7z extraction
     throw new Error(
       'Automatic MPV download is not yet supported on Windows.\n' +
-      'Please install MPV manually:\n' +
-      '  - Download from https://mpv.io/installation/\n' +
-      '  - Or use chocolatey: choco install mpv\n' +
-      '  - Or use scoop: scoop install mpv'
+        'Please install MPV manually:\n' +
+        '  - Download from https://mpv.io/installation/\n' +
+        '  - Or use chocolatey: choco install mpv\n' +
+        '  - Or use scoop: scoop install mpv'
     );
   } else {
     // Extract tar.gz
@@ -99,7 +115,10 @@ async function extractArchive(
   }
 }
 
-async function findMpvBinary(extractDir: string, platformInfo: PlatformInfo): Promise<string> {
+async function findMpvBinary(
+  extractDir: string,
+  platformInfo: PlatformInfo
+): Promise<string> {
   const binaryName = platformInfo.platform === 'win32' ? 'mpv.exe' : 'mpv';
 
   async function searchDir(dir: string): Promise<string | null> {
@@ -124,7 +143,9 @@ async function findMpvBinary(extractDir: string, platformInfo: PlatformInfo): Pr
   const mpvPath = await searchDir(extractDir);
 
   if (!mpvPath) {
-    throw new Error(`MPV binary not found in extracted archive at ${extractDir}`);
+    throw new Error(
+      `MPV binary not found in extracted archive at ${extractDir}`
+    );
   }
 
   return mpvPath;

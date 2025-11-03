@@ -8,14 +8,25 @@ interface NowPlayingProps {
   volume: number;
 }
 
-export const NowPlaying: React.FC<NowPlayingProps> = ({ station, paused, volume }) => {
+export const NowPlaying: React.FC<NowPlayingProps> = ({
+  station,
+  paused,
+  volume,
+}) => {
   const { stdout } = useStdout();
   const terminalWidth = stdout?.columns || 80;
 
   if (!station) {
     return (
-      <Box borderStyle="round" borderColor="gray" paddingX={1} width={terminalWidth - 4}>
-        <Text color="gray">No station playing - Press Enter to select a station</Text>
+      <Box
+        borderStyle="round"
+        borderColor="gray"
+        paddingX={1}
+        width={terminalWidth - 4}
+      >
+        <Text color="gray">
+          No station playing - Press Enter to select a station
+        </Text>
       </Box>
     );
   }
@@ -27,7 +38,9 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({ station, paused, volume 
   const nowPlayingText = hasMetadata
     ? station.now_playing?.song?.name && station.now_playing?.artist?.name
       ? `${station.now_playing.artist.name} - ${station.now_playing.song.name}`
-      : station.now_playing?.song?.name || station.now_playing?.artist?.name || ''
+      : station.now_playing?.song?.name ||
+        station.now_playing?.artist?.name ||
+        ''
     : '';
 
   const statusIcon = paused ? '⏸' : '♪';

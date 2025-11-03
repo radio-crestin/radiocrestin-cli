@@ -1,5 +1,6 @@
 import type { Station, StationStream } from '../types/station.js';
 import type { MpvPlayer } from './player.service.js';
+import { sessionService } from './session.service.js';
 
 export class StreamService {
   private player: MpvPlayer;
@@ -10,6 +11,13 @@ export class StreamService {
 
   constructor(player: MpvPlayer) {
     this.player = player;
+  }
+
+  private addTrackingParams(streamUrl: string): string {
+    const url = new URL(streamUrl);
+    url.searchParams.set('ref', 'radiocrestin-cli');
+    url.searchParams.set('s', sessionService.getSessionId());
+    return url.toString();
   }
 
   async playStation(station: Station): Promise<void> {
@@ -28,7 +36,9 @@ export class StreamService {
 
   private getSortedStreams(station: Station): StationStream[] {
     // Get station_streams and sort by order
-    const streams = [...station.station_streams].sort((a, b) => a.order - b.order);
+    const streams = [...station.station_streams].sort(
+      (a, b) => a.order - b.order
+    );
 
     // If no streams in station_streams, create fallback streams
     if (streams.length === 0) {
@@ -83,10 +93,11 @@ export class StreamService {
     const stream = streams[this.currentStreamIndex];
 
     try {
-      await this.player.loadStream(stream.stream_url);
+      const streamUrl = this.addTrackingParams(stream.stream_url);
+      await this.player.loadStream(streamUrl);
       // Stream loaded successfully
       this.retryAttempts = 0;
-    } catch (error) {
+    } catch {
       // Stream failed, try next one
       this.currentStreamIndex++;
       return this.tryNextStream(streams);

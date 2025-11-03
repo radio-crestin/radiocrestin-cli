@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, useInput, useApp } from 'ink';
+import { Box, Text, useInput, useApp, useStdin } from 'ink';
 import { StationList } from './StationList.js';
 import { SearchInput } from './SearchInput.js';
 import { NowPlaying } from './NowPlaying.js';
@@ -17,6 +17,7 @@ interface AppProps {
 
 export const App: React.FC<AppProps> = ({ player }) => {
   const { exit } = useApp();
+  const { stdin, setRawMode } = useStdin();
   const [stations, setStations] = useState<Station[]>([]);
   const [filteredStations, setFilteredStations] = useState<Station[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -44,13 +45,25 @@ export const App: React.FC<AppProps> = ({ player }) => {
         // Set player volume
         await player.setVolume(favoritesService.getVolume());
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load stations');
+        setError(
+          err instanceof Error ? err.message : 'Failed to load stations'
+        );
       } finally {
         setLoading(false);
       }
     };
 
     loadStations();
+
+    // Set up metadata refresh interval
+    const metadataInterval = setInterval(async () => {
+      try {
+        const data = await fetchStations();
+        setStations(data);
+      } catch {
+        // Silently fail metadata refresh to avoid disrupting user experience
+      }
+    }, 10000); // Refresh every 10 seconds
 
     // Set up player event listeners
     const handlePauseChanged = (isPaused: boolean) => {
@@ -66,10 +79,67 @@ export const App: React.FC<AppProps> = ({ player }) => {
     player.on('volume-changed', handleVolumeChanged);
 
     return () => {
+      clearInterval(metadataInterval);
       player.off('pause-changed', handlePauseChanged);
       player.off('volume-changed', handleVolumeChanged);
     };
   }, [player]);
+
+  // Enable mouse support
+  useEffect(() => {
+    if (setRawMode) {
+      setRawMode(true);
+    }
+
+    if (!stdin) return;
+
+    // Enable mouse tracking
+    process.stdout.write('\x1b[?1000h'); // Enable mouse button tracking
+    process.stdout.write('\x1b[?1002h'); // Enable mouse motion tracking
+    process.stdout.write('\x1b[?1015h'); // Enable urxvt mouse mode
+    process.stdout.write('\x1b[?1006h'); // Enable SGR mouse mode
+
+    const handleMouseData = (data: Buffer) => {
+      const str = data.toString();
+
+      // Parse SGR mouse events: ESC[<button;x;y;M or m
+      // eslint-disable-next-line no-control-regex
+      const sgrMatch = str.match(/\x1b\[<(\d+);(\d+);(\d+)([Mm])/);
+      if (sgrMatch) {
+        const button = parseInt(sgrMatch[1]);
+        const action = sgrMatch[4];
+
+        // Mouse wheel up: button 64, Mouse wheel down: button 65
+        if (action === 'M') {
+          if (button === 64) {
+            // Scroll up
+            setSelectedIndex((prev) => Math.max(0, prev - 1));
+          } else if (button === 65) {
+            // Scroll down
+            setSelectedIndex((prev) =>
+              Math.min(filteredStations.length - 1, prev + 1)
+            );
+          }
+        }
+      }
+    };
+
+    stdin.on('data', handleMouseData);
+
+    return () => {
+      // Disable mouse tracking
+      process.stdout.write('\x1b[?1000l');
+      process.stdout.write('\x1b[?1002l');
+      process.stdout.write('\x1b[?1015l');
+      process.stdout.write('\x1b[?1006l');
+
+      stdin.off('data', handleMouseData);
+
+      if (setRawMode) {
+        setRawMode(false);
+      }
+    };
+  }, [stdin, setRawMode, filteredStations.length]);
 
   // Filter and sort stations
   useEffect(() => {
@@ -125,7 +195,9 @@ export const App: React.FC<AppProps> = ({ player }) => {
     }
 
     if (key.downArrow || input === 'j') {
-      setSelectedIndex((prev) => Math.min(filteredStations.length - 1, prev + 1));
+      setSelectedIndex((prev) =>
+        Math.min(filteredStations.length - 1, prev + 1)
+      );
       return;
     }
 

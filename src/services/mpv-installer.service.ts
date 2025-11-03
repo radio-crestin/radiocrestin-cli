@@ -4,7 +4,9 @@ import { getPlatformInfo, getMpvCacheDir } from '../utils/platform.js';
 import { downloadMpv, isMpvDownloaded } from './mpv-downloader.service.js';
 import fs from 'fs/promises';
 
-export async function getMpvPath(onDownloadProgress?: (progress: number) => void): Promise<string> {
+export async function getMpvPath(
+  onDownloadProgress?: (progress: number) => void
+): Promise<string> {
   // 1. Check for system MPV
   const systemMpv = findSystemMpv();
   if (systemMpv) {
@@ -34,7 +36,7 @@ function findSystemMpv(): string | null {
       const mpvPath = result.split('\n')[0].trim();
       return mpvPath;
     }
-  } catch (error) {
+  } catch {
     // Command failed, MPV not in PATH
   }
 
@@ -67,7 +69,7 @@ async function findCachedMpv(): Promise<string | null> {
           if (found) return found;
         }
       }
-    } catch (error) {
+    } catch {
       // Directory doesn't exist or can't be read
     }
 
@@ -77,7 +79,9 @@ async function findCachedMpv(): Promise<string | null> {
   return searchDir(extractDir);
 }
 
-export async function ensureMpvInstalled(onProgress?: (message: string, progress?: number) => void): Promise<string> {
+export async function ensureMpvInstalled(
+  onProgress?: (message: string, progress?: number) => void
+): Promise<string> {
   const onDownloadProgress = (progress: number) => {
     if (onProgress) {
       onProgress(`Downloading MPV (${Math.round(progress)}%)...`, progress);

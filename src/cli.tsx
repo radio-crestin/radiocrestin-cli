@@ -61,7 +61,10 @@ async function main() {
       spinner.fail(chalk.red('Failed to start player'));
     }
 
-    console.error(chalk.red('\nError:'), error instanceof Error ? error.message : error);
+    console.error(
+      chalk.red('\nError:'),
+      error instanceof Error ? error.message : error
+    );
 
     console.error(
       chalk.yellow('\nTroubleshooting:'),
