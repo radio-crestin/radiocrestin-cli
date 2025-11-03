@@ -71,6 +71,14 @@ export const Help: React.FC = () => {
         <Text color="gray">q or Ctrl+C</Text>
         <Text> - Quit</Text>
       </Box>
+      <Box marginTop={1} flexDirection="column">
+        <Text dimColor color="gray">
+          This project is open-source!
+        </Text>
+        <Text dimColor color="gray">
+          Suggest changes: <Text color="cyan">github.com/radio-crestin/radiocrestin-cli</Text>
+        </Text>
+      </Box>
     </Box>
   );
 };
