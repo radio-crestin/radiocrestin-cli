@@ -28,10 +28,14 @@ export async function fetchStations(): Promise<Station[]> {
   const url = `${API_BASE_URL}/stations?timestamp=${timestamp}`;
 
   try {
-    const response = await axios.get<Station[]>(url);
+    const response = await axios.get(url);
 
-    // The API returns an array directly, not wrapped in a data property
-    const stations = Array.isArray(response.data) ? response.data : [];
+    // The API returns a GraphQL response with structure: { data: { stations: [...] } }
+    const stations = response.data?.data?.stations || [];
+
+    if (!Array.isArray(stations)) {
+      throw new Error('Invalid API response format');
+    }
 
     // Update cache
     cache = {
