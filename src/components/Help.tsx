@@ -1,9 +1,30 @@
 import React from 'react';
-import { Box, Text } from 'ink';
+import { Box, Text, useStdout } from 'ink';
 
 export const Help: React.FC = () => {
+  const { stdout } = useStdout();
+  const terminalHeight = stdout?.rows || 24;
+
+  // Calculate available height for help
+  // Height breakdown:
+  // - App padding: 2
+  // - Title with margin: 2
+  // - NowPlaying (max): 8
+  // - SearchInput (max): 5
+  // - Footer: 4
+  const overhead = 2 + 2 + 8 + 5 + 4;
+  const availableHeight = Math.max(10, terminalHeight - overhead);
+
   return (
-    <Box borderStyle="round" borderColor="cyan" paddingX={1} marginY={1} flexDirection="column">
+    <Box
+      borderStyle="round"
+      borderColor="cyan"
+      paddingX={1}
+      marginY={1}
+      flexDirection="column"
+      height={availableHeight}
+      overflow="hidden"
+    >
       <Box marginBottom={1}>
         <Text bold color="cyan">
           Keyboard Shortcuts

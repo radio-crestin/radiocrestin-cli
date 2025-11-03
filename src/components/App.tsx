@@ -297,6 +297,8 @@ export const App: React.FC<AppProps> = ({ player }) => {
             selectedIndex={selectedIndex}
             currentStationSlug={currentStation?.slug || null}
             favorites={favorites}
+            hasStation={currentStation !== null}
+            searchActive={searchActive || searchQuery.length > 0}
           />
         )}
       </Box>
