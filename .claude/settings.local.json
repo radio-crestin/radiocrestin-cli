@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:api.radiocrestin.ro)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.radiocrestin.ro)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,9 @@
+src/
+.idea/
+.claude/
+*.iml
+tsconfig.json
+build.js
+.DS_Store
+*.log
+.env

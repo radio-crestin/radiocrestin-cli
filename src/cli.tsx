@@ -1,0 +1,71 @@
+#!/usr/bin/env node
+import React from 'react';
+import { render, Text, Box } from 'ink';
+import ora from 'ora';
+import chalk from 'chalk';
+import { App } from './components/App.js';
+import { MpvPlayer } from './services/player.service.js';
+import { ensureMpvInstalled } from './services/mpv-installer.service.js';
+
+async function main() {
+  let spinner: ReturnType<typeof ora> | null = null;
+
+  try {
+    // Show loading spinner while setting up MPV
+    spinner = ora({
+      text: 'Checking for MPV installation...',
+      color: 'cyan',
+    }).start();
+
+    const mpvPath = await ensureMpvInstalled((message, progress) => {
+      if (spinner) {
+        spinner.text = message;
+      }
+    });
+
+    spinner.succeed(chalk.green('MPV ready!'));
+    spinner = null;
+
+    // Create and start player
+    const player = new MpvPlayer(mpvPath);
+
+    // Show starting message
+    spinner = ora({
+      text: 'Starting player...',
+      color: 'cyan',
+    }).start();
+
+    await player.start();
+
+    spinner.succeed(chalk.green('Player started!'));
+    spinner = null;
+
+    // Render the Ink app
+    const { waitUntilExit } = render(<App player={player} />);
+
+    // Wait for app to exit
+    await waitUntilExit();
+
+    // Cleanup
+    await player.quit();
+    process.exit(0);
+  } catch (error) {
+    if (spinner) {
+      spinner.fail(chalk.red('Failed to start player'));
+    }
+
+    console.error(chalk.red('\nError:'), error instanceof Error ? error.message : error);
+
+    console.error(
+      chalk.yellow('\nTroubleshooting:'),
+      '\n- Ensure you have a stable internet connection',
+      '\n- Try running with elevated permissions',
+      '\n- Check if MPV is installed correctly: mpv --version',
+      '\n- Report issues at: https://github.com/iosifnicolae2/radiocrestin-cli/issues'
+    );
+
+    process.exit(1);
+  }
+}
+
+main();
