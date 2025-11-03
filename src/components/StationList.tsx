@@ -85,18 +85,24 @@ export const StationList: React.FC<StationListProps> = ({
         const isPlaying = station.slug === currentStationSlug;
         const isFavorite = favorites.includes(station.slug);
 
-        const nowPlayingText =
-          station.now_playing?.song?.name && station.now_playing?.artist?.name
+        const hasMetadata = !!(
+          station.now_playing?.song?.name || station.now_playing?.artist?.name
+        );
+
+        const nowPlayingText = hasMetadata
+          ? station.now_playing?.song?.name && station.now_playing?.artist?.name
             ? `${station.now_playing.artist.name} - ${station.now_playing.song.name}`
-            : station.now_playing?.song?.name ||
-              station.now_playing?.artist?.name ||
-              'No info';
+            : station.now_playing?.song?.name || station.now_playing?.artist?.name || ''
+          : '';
+
+        const hasListeners = station.total_listeners > 0;
 
         // Calculate available width for now playing text
         const prefix = `${isSelected ? '▶ ' : '  '}${isFavorite ? '⭐ ' : ''}${isPlaying ? '♪ ' : ''}`;
         const stationTitle = station.title;
-        const listeners = ` (${station.total_listeners} listeners) - `;
-        const usedWidth = prefix.length + stationTitle.length + listeners.length;
+        const listeners = hasListeners ? ` (${station.total_listeners} listeners)` : '';
+        const separator = hasMetadata ? ' - ' : '';
+        const usedWidth = prefix.length + stationTitle.length + listeners.length + separator.length;
         const availableWidth = Math.max(20, terminalWidth - usedWidth - 10);
 
         const truncatedNowPlaying =
@@ -106,18 +112,22 @@ export const StationList: React.FC<StationListProps> = ({
 
         return (
           <Box key={station.id} width={terminalWidth - 4}>
-            <Text color={isSelected ? 'cyan' : 'white'} bold={isSelected}>
+            <Text color={isSelected ? 'cyan' : 'white'} bold={isSelected} wrap="truncate-end">
               {isSelected ? '▶ ' : '  '}
               {isFavorite ? '⭐ ' : ''}
               {isPlaying ? '♪ ' : ''}
               <Text color={isPlaying ? 'green' : isSelected ? 'cyan' : 'white'}>
                 {station.title}
               </Text>
-              <Text color="gray"> ({station.total_listeners} listeners)</Text>
-              {' - '}
-              <Text color="magenta" dimColor>
-                {truncatedNowPlaying}
-              </Text>
+              {hasListeners && <Text color="gray"> ({station.total_listeners} listeners)</Text>}
+              {hasMetadata && (
+                <>
+                  {' - '}
+                  <Text color="magenta" dimColor>
+                    {truncatedNowPlaying}
+                  </Text>
+                </>
+              )}
             </Text>
           </Box>
         );

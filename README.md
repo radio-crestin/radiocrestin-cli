@@ -25,7 +25,7 @@ A beautiful terminal-based radio player for [RadioCrestin.ro](https://radiocrest
 No installation needed! Just run:
 
 ```bash
-npx radiocrestin-cli
+npx radiocrestin
 ```
 
 The first time you run it, MPV will be downloaded automatically (~30MB). Subsequent runs are instant.
@@ -33,8 +33,8 @@ The first time you run it, MPV will be downloaded automatically (~30MB). Subsequ
 ### Global Install
 
 ```bash
-npm install -g radiocrestin-cli
-radiocrestin-cli
+npm install -g radiocrestin
+radiocrestin
 ```
 
 ### Shorter Alias
@@ -48,7 +48,7 @@ npx rccli
 Simply run the command and use your keyboard to navigate:
 
 ```bash
-npx radiocrestin-cli
+npx radiocrestin
 ```
 
 ## Keyboard Shortcuts
@@ -195,24 +195,24 @@ If automatic MPV download fails, install it manually (see above) and the CLI wil
 On some systems, you may need to run with elevated permissions:
 
 ```bash
-sudo npx radiocrestin-cli
+sudo npx radiocrestin
 ```
 
 ## Configuration
 
 Configuration is stored in platform-appropriate locations:
 
-- **macOS**: `~/Library/Preferences/radiocrestin-cli-nodejs/`
-- **Windows**: `%APPDATA%\radiocrestin-cli-nodejs\Config\`
-- **Linux**: `~/.config/radiocrestin-cli-nodejs/`
+- **macOS**: `~/Library/Preferences/radiocrestin-nodejs/`
+- **Windows**: `%APPDATA%\radiocrestin-nodejs\Config\`
+- **Linux**: `~/.config/radiocrestin-nodejs/`
 
 ## Development
 
 ### Clone & Install
 
 ```bash
-git clone https://github.com/iosifnicolae2/radiocrestin-cli.git
-cd radiocrestin-cli
+git clone https://github.com/iosifnicolae2/radiocrestin.git
+cd radiocrestin
 npm install
 ```
 
@@ -287,7 +287,7 @@ MIT © Iosif Nicolae
 
 ## Support
 
-- Report issues: [GitHub Issues](https://github.com/iosifnicolae2/radiocrestin-cli/issues)
+- Report issues: [GitHub Issues](https://github.com/iosifnicolae2/radiocrestin/issues)
 - RadioCrestin.ro: [https://radiocrestin.ro](https://radiocrestin.ro)
 
 ## Acknowledgments

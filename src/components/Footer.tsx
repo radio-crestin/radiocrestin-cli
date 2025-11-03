@@ -8,7 +8,7 @@ export const Footer: React.FC = () => {
   return (
     <Box borderStyle="single" borderColor="gray" paddingX={1} width={terminalWidth - 4}>
       <Text dimColor>
-        Press <Text color="cyan">?</Text> for help | <Text color="cyan">q</Text> to quit
+        <Text color="cyan">Space</Text> play/pause | <Text color="cyan">+/-</Text> volume | <Text color="cyan">?</Text> help | <Text color="cyan">q</Text> quit
       </Text>
     </Box>
   );

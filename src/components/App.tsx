@@ -180,7 +180,13 @@ export const App: React.FC<AppProps> = ({ player }) => {
 
     if (key.backspace || key.delete) {
       if (searchQuery.length > 0) {
-        setSearchQuery((prev) => prev.slice(0, -1));
+        setSearchQuery((prev) => {
+          const newQuery = prev.slice(0, -1);
+          if (newQuery.length === 0) {
+            setSearchActive(false);
+          }
+          return newQuery;
+        });
       }
       return;
     }
@@ -286,7 +292,7 @@ export const App: React.FC<AppProps> = ({ player }) => {
     <Box flexDirection="column" height="100%" padding={1}>
       <Box>
         <Text bold color="green">
-          🎵 RadioCrestin.ro CLI Player
+          🎵 RadioCrestin.ro Player
         </Text>
       </Box>
 

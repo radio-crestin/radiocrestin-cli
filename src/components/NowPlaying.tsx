@@ -20,12 +20,15 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({ station, paused, volume 
     );
   }
 
-  const nowPlayingText =
-    station.now_playing?.song?.name && station.now_playing?.artist?.name
+  const hasMetadata = !!(
+    station.now_playing?.song?.name || station.now_playing?.artist?.name
+  );
+
+  const nowPlayingText = hasMetadata
+    ? station.now_playing?.song?.name && station.now_playing?.artist?.name
       ? `${station.now_playing.artist.name} - ${station.now_playing.song.name}`
-      : station.now_playing?.song?.name ||
-        station.now_playing?.artist?.name ||
-        'Unknown';
+      : station.now_playing?.song?.name || station.now_playing?.artist?.name || ''
+    : '';
 
   const statusIcon = paused ? '⏸' : '♪';
   const statusText = paused ? 'Paused' : 'Playing';
@@ -40,6 +43,8 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({ station, paused, volume 
     nowPlayingText.length > maxNowPlayingWidth
       ? nowPlayingText.slice(0, maxNowPlayingWidth - 3) + '...'
       : nowPlayingText;
+
+  const hasListeners = station.total_listeners > 0;
 
   return (
     <Box
@@ -57,24 +62,28 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({ station, paused, volume 
           {station.title}
         </Text>
       </Box>
-      <Box>
-        <Text color="magenta">{truncatedNowPlaying}</Text>
-      </Box>
+      {hasMetadata && (
+        <Box>
+          <Text color="magenta">{truncatedNowPlaying}</Text>
+        </Box>
+      )}
       <Box>
         <Text color="gray">Volume: </Text>
         <Text color="cyan">{volumeBar}</Text>
         <Text color="gray"> {volume}%</Text>
       </Box>
-      <Box>
-        <Text dimColor color="gray">
-          Listeners: {station.total_listeners} | Status:{' '}
-          {station.uptime.is_up ? (
-            <Text color="green">Online</Text>
-          ) : (
-            <Text color="red">Offline</Text>
-          )}
-        </Text>
-      </Box>
+      {hasListeners && (
+        <Box>
+          <Text dimColor color="gray">
+            Listeners: {station.total_listeners} | Status:{' '}
+            {station.uptime.is_up ? (
+              <Text color="green">Online</Text>
+            ) : (
+              <Text color="red">Offline</Text>
+            )}
+          </Text>
+        </Box>
+      )}
     </Box>
   );
 };

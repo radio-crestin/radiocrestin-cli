@@ -40,6 +40,9 @@ async function main() {
     spinner.succeed(chalk.green('Player started!'));
     spinner = null;
 
+    // Clear screen for full screen display
+    console.clear();
+
     // Render the Ink app
     const { waitUntilExit } = render(<App player={player} />, {
       stdin: process.stdin,
