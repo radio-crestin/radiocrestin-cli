@@ -15,7 +15,7 @@ class FavoritesService {
       defaults: {
         favorites: [],
         lastPlayed: null,
-        volume: 100,
+        volume: 75,
       },
     });
   }

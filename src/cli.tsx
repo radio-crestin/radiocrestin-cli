@@ -1,10 +1,10 @@
-import React from 'react';
-import { render, Text, Box } from 'ink';
+import { render } from 'ink';
 import ora from 'ora';
 import chalk from 'chalk';
 import { App } from './components/App.js';
 import { MpvPlayer } from './services/player.service.js';
 import { ensureMpvInstalled } from './services/mpv-installer.service.js';
+import { favoritesService } from './services/favorites.service.js';
 
 async function main() {
   let spinner: ReturnType<typeof ora> | null = null;
@@ -16,7 +16,7 @@ async function main() {
       color: 'cyan',
     }).start();
 
-    const mpvPath = await ensureMpvInstalled((message, progress) => {
+    const mpvPath = await ensureMpvInstalled((message) => {
       if (spinner) {
         spinner.text = message;
       }
@@ -25,8 +25,9 @@ async function main() {
     spinner.succeed(chalk.green('MPV ready!'));
     spinner = null;
 
-    // Create and start player
-    const player = new MpvPlayer(mpvPath);
+    // Create and start player with saved volume
+    const savedVolume = favoritesService.getVolume();
+    const player = new MpvPlayer(mpvPath, savedVolume);
 
     // Show starting message
     spinner = ora({

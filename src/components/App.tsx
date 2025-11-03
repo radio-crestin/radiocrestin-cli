@@ -225,7 +225,7 @@ export const App: React.FC<AppProps> = ({ player }) => {
     const station = filteredStations[selectedIndex];
     if (!station) return;
 
-    const isFav = favoritesService.toggleFavorite(station.slug);
+    favoritesService.toggleFavorite(station.slug);
     setFavorites(favoritesService.getFavorites());
   };
 

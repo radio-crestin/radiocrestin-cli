@@ -32,10 +32,11 @@ export class MpvPlayer extends EventEmitter {
     position: null,
   };
 
-  constructor(mpvPath: string) {
+  constructor(mpvPath: string, private initialVolume: number = 75) {
     super();
     this.mpvPath = mpvPath;
     this.socketPath = path.join(os.tmpdir(), `mpv-socket-${process.pid}`);
+    this.state.volume = initialVolume;
   }
 
   async start(): Promise<void> {
@@ -46,7 +47,7 @@ export class MpvPlayer extends EventEmitter {
       '--idle=yes',
       `--input-ipc-server=${this.socketPath}`,
       '--input-media-keys=yes',
-      '--volume=100',
+      `--volume=${this.initialVolume}`,
     ]);
 
     this.mpvProcess.on('error', (error) => {
