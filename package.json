@@ -15,7 +15,11 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
+    "prepublishOnly": "pnpm run lint && pnpm run type-check && pnpm run build",
+    "release:patch": "npm version patch && git push && git push --tags && npm publish",
+    "release:minor": "npm version minor && git push && git push --tags && npm publish",
+    "release:major": "npm version major && git push && git push --tags && npm publish"
   },
   "keywords": [
     "radio",
