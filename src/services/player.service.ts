@@ -181,14 +181,14 @@ export class MpvPlayer extends EventEmitter {
     await this.observeProperty('time-pos');
   }
 
-  private async sendCommand(command: string[], args: any[] = []): Promise<any> {
+  private async sendCommand(command: string[]): Promise<any> {
     if (!this.socket) {
       throw new Error('Socket not connected');
     }
 
     const requestId = this.commandId++;
     const request = {
-      command: [command, ...args],
+      command: command,
       request_id: requestId,
     };
 
