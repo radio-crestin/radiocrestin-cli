@@ -50,12 +50,21 @@ export class MpvPlayer extends EventEmitter {
     ]);
 
     this.mpvProcess.on('error', (error) => {
+      console.error('MPV process error:', error);
       this.emit('error', error);
     });
 
     this.mpvProcess.on('exit', (code) => {
+      console.error('MPV process exited with code:', code);
       this.emit('exit', code);
     });
+
+    // Capture stderr for debugging
+    if (this.mpvProcess.stderr) {
+      this.mpvProcess.stderr.on('data', (data) => {
+        console.error('MPV stderr:', data.toString());
+      });
+    }
 
     // Wait for socket to be created
     await this.waitForSocket();

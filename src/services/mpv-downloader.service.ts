@@ -4,7 +4,7 @@ import path from 'path';
 import { createWriteStream, existsSync } from 'fs';
 import { pipeline } from 'stream/promises';
 import extract from 'extract-zip';
-import tar from 'tar';
+import * as tar from 'tar';
 import { getPlatformInfo, getMpvCacheDir, type PlatformInfo } from '../utils/platform.js';
 
 const MPV_DOWNLOAD_URLS = {

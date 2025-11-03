@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import React from 'react';
 import { render, Text, Box } from 'ink';
 import ora from 'ora';
@@ -41,7 +40,11 @@ async function main() {
     spinner = null;
 
     // Render the Ink app
-    const { waitUntilExit } = render(<App player={player} />);
+    const { waitUntilExit } = render(<App player={player} />, {
+      stdin: process.stdin,
+      stdout: process.stdout,
+      stderr: process.stderr,
+    });
 
     // Wait for app to exit
     await waitUntilExit();
