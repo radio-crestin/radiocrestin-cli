@@ -10,7 +10,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({ query, active }) => {
   const { stdout } = useStdout();
   const terminalWidth = stdout?.columns || 80;
 
-  if (!active && !query) {
+  if (!query) {
     return null;
   }
 
