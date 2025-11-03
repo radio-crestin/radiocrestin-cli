@@ -4,10 +4,11 @@ import { Box, Text } from 'ink';
 export const Help: React.FC = () => {
   return (
     <Box borderStyle="round" borderColor="cyan" paddingX={1} marginY={1} flexDirection="column">
-      <Box>
+      <Box marginBottom={1}>
         <Text bold color="cyan">
           Keyboard Shortcuts
         </Text>
+        <Text dimColor> (Press ? or Esc to close)</Text>
       </Box>
       <Box>
         <Text color="gray">↑/↓ or j/k</Text>
@@ -38,8 +39,12 @@ export const Help: React.FC = () => {
         <Text> - Search stations</Text>
       </Box>
       <Box>
+        <Text color="gray">? or h</Text>
+        <Text> - Toggle this help</Text>
+      </Box>
+      <Box>
         <Text color="gray">Escape</Text>
-        <Text> - Clear search</Text>
+        <Text> - Clear search / Close help</Text>
       </Box>
       <Box>
         <Text color="gray">q or Ctrl+C</Text>

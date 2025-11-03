@@ -4,6 +4,7 @@ import { StationList } from './StationList.js';
 import { SearchInput } from './SearchInput.js';
 import { NowPlaying } from './NowPlaying.js';
 import { Help } from './Help.js';
+import { Footer } from './Footer.js';
 import { MpvPlayer } from '../services/player.service.js';
 import { StreamService } from '../services/stream.service.js';
 import { fetchStations } from '../services/api.service.js';
@@ -25,6 +26,7 @@ export const App: React.FC<AppProps> = ({ player }) => {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActive, setSearchActive] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [streamService] = useState(() => new StreamService(player));
@@ -156,10 +158,17 @@ export const App: React.FC<AppProps> = ({ player }) => {
       return;
     }
 
+    // Toggle help
+    if (input === '?' || input === 'h') {
+      setShowHelp((prev) => !prev);
+      return;
+    }
+
     // Search
     if (key.escape) {
       setSearchQuery('');
       setSearchActive(false);
+      setShowHelp(false);
       return;
     }
 
@@ -279,14 +288,18 @@ export const App: React.FC<AppProps> = ({ player }) => {
 
       <SearchInput query={searchQuery} active={searchActive} />
 
-      <StationList
-        stations={filteredStations}
-        selectedIndex={selectedIndex}
-        currentStationSlug={currentStation?.slug || null}
-        favorites={favorites}
-      />
+      {showHelp ? (
+        <Help />
+      ) : (
+        <StationList
+          stations={filteredStations}
+          selectedIndex={selectedIndex}
+          currentStationSlug={currentStation?.slug || null}
+          favorites={favorites}
+        />
+      )}
 
-      <Help />
+      <Footer />
     </Box>
   );
 };
