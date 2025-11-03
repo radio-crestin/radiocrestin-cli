@@ -65,7 +65,7 @@ export const Help: React.FC = () => {
       </Box>
       <Box marginLeft={2}>
         <Text dimColor color="gray">
-          (While searching, only navigation, Enter, and Esc work)
+          (While searching, only ↑/↓, Enter, Backspace, Esc, and Ctrl+C work)
         </Text>
       </Box>
       <Box>

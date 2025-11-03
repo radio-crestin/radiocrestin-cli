@@ -288,8 +288,8 @@ export const App: React.FC<AppProps> = ({ player }) => {
 
   // Keyboard input handler
   useInput((input, key) => {
-    // Quit (always available)
-    if (input === 'q' || (key.ctrl && input === 'c')) {
+    // Ctrl+C to quit (always available)
+    if (key.ctrl && input === 'c') {
       handleQuit();
       return;
     }
@@ -302,13 +302,13 @@ export const App: React.FC<AppProps> = ({ player }) => {
       return;
     }
 
-    // Navigation (always available)
-    if (key.upArrow || input === 'k') {
+    // Arrow key navigation (always available)
+    if (key.upArrow) {
       setSelectedIndex((prev) => Math.max(0, prev - 1));
       return;
     }
 
-    if (key.downArrow || input === 'j') {
+    if (key.downArrow) {
       setSelectedIndex((prev) =>
         Math.min(filteredStations.length - 1, prev + 1)
       );
@@ -335,7 +335,7 @@ export const App: React.FC<AppProps> = ({ player }) => {
       return;
     }
 
-    // When search is active, disable other shortcuts and capture input
+    // When search is active, disable all letter shortcuts and capture input
     if (searchActive) {
       // Alphanumeric input for search
       if (input && /^[a-zA-Z0-9 ]$/.test(input)) {
@@ -345,6 +345,25 @@ export const App: React.FC<AppProps> = ({ player }) => {
     }
 
     // Below shortcuts only work when search is NOT active
+
+    // Quit with 'q' (only when not searching)
+    if (input === 'q') {
+      handleQuit();
+      return;
+    }
+
+    // vim-style navigation (only when not searching)
+    if (input === 'k') {
+      setSelectedIndex((prev) => Math.max(0, prev - 1));
+      return;
+    }
+
+    if (input === 'j') {
+      setSelectedIndex((prev) =>
+        Math.min(filteredStations.length - 1, prev + 1)
+      );
+      return;
+    }
 
     // Pause/Resume
     if (input === ' ') {
