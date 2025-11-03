@@ -37,12 +37,6 @@ npm install -g radiocrestin
 radiocrestin
 ```
 
-### Shorter Alias
-
-```bash
-npx rccli
-```
-
 ## Usage
 
 Simply run the command and use your keyboard to navigate:
