@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Text } from 'ink';
+import React, { useMemo } from 'react';
+import { Box, Text, useStdout } from 'ink';
 import type { Station } from '../types/station.js';
 
 interface StationListProps {
@@ -15,6 +15,30 @@ export const StationList: React.FC<StationListProps> = ({
   currentStationSlug,
   favorites,
 }) => {
+  const { stdout } = useStdout();
+  const terminalWidth = stdout?.columns || 80;
+  const terminalHeight = stdout?.rows || 24;
+
+  // Calculate available height for station list
+  // Account for: header (3), now playing (6), search (3), footer (3), margins
+  const listHeight = Math.max(5, terminalHeight - 15);
+
+  // Calculate visible window
+  const { startIndex, endIndex } = useMemo(() => {
+    const halfWindow = Math.floor(listHeight / 2);
+    let start = Math.max(0, selectedIndex - halfWindow);
+    let end = Math.min(stations.length, start + listHeight);
+
+    // Adjust if we're at the end
+    if (end - start < listHeight) {
+      start = Math.max(0, end - listHeight);
+    }
+
+    return { startIndex: start, endIndex: end };
+  }, [selectedIndex, listHeight, stations.length]);
+
+  const visibleStations = stations.slice(startIndex, endIndex);
+
   if (stations.length === 0) {
     return (
       <Box marginY={1}>
@@ -24,15 +48,22 @@ export const StationList: React.FC<StationListProps> = ({
   }
 
   return (
-    <Box flexDirection="column" marginY={1}>
+    <Box flexDirection="column" marginY={1} width={terminalWidth - 4}>
       <Box marginBottom={1}>
         <Text bold color="cyan">
           Stations ({stations.length})
         </Text>
+        {stations.length > listHeight && (
+          <Text dimColor color="gray">
+            {' '}
+            - Showing {startIndex + 1}-{endIndex} of {stations.length}
+          </Text>
+        )}
       </Box>
 
-      {stations.map((station, index) => {
-        const isSelected = index === selectedIndex;
+      {visibleStations.map((station, index) => {
+        const actualIndex = startIndex + index;
+        const isSelected = actualIndex === selectedIndex;
         const isPlaying = station.slug === currentStationSlug;
         const isFavorite = favorites.includes(station.slug);
 
@@ -43,8 +74,20 @@ export const StationList: React.FC<StationListProps> = ({
               station.now_playing?.artist?.name ||
               'No info';
 
+        // Calculate available width for now playing text
+        const prefix = `${isSelected ? '▶ ' : '  '}${isFavorite ? '⭐ ' : ''}${isPlaying ? '♪ ' : ''}`;
+        const stationTitle = station.title;
+        const listeners = ` (${station.total_listeners} listeners) - `;
+        const usedWidth = prefix.length + stationTitle.length + listeners.length;
+        const availableWidth = Math.max(20, terminalWidth - usedWidth - 10);
+
+        const truncatedNowPlaying =
+          nowPlayingText.length > availableWidth
+            ? nowPlayingText.slice(0, availableWidth - 3) + '...'
+            : nowPlayingText;
+
         return (
-          <Box key={station.id}>
+          <Box key={station.id} width={terminalWidth - 4}>
             <Text color={isSelected ? 'cyan' : 'white'} bold={isSelected}>
               {isSelected ? '▶ ' : '  '}
               {isFavorite ? '⭐ ' : ''}
@@ -55,8 +98,7 @@ export const StationList: React.FC<StationListProps> = ({
               <Text color="gray"> ({station.total_listeners} listeners)</Text>
               {' - '}
               <Text color="magenta" dimColor>
-                {nowPlayingText.slice(0, 50)}
-                {nowPlayingText.length > 50 ? '...' : ''}
+                {truncatedNowPlaying}
               </Text>
             </Text>
           </Box>

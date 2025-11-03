@@ -277,7 +277,7 @@ export const App: React.FC<AppProps> = ({ player }) => {
   }
 
   return (
-    <Box flexDirection="column" padding={1}>
+    <Box flexDirection="column" height="100%" padding={1}>
       <Box marginBottom={1}>
         <Text bold color="green">
           🎵 RadioCrestin.ro CLI Player
@@ -288,16 +288,18 @@ export const App: React.FC<AppProps> = ({ player }) => {
 
       <SearchInput query={searchQuery} active={searchActive} />
 
-      {showHelp ? (
-        <Help />
-      ) : (
-        <StationList
-          stations={filteredStations}
-          selectedIndex={selectedIndex}
-          currentStationSlug={currentStation?.slug || null}
-          favorites={favorites}
-        />
-      )}
+      <Box flexGrow={1} flexDirection="column">
+        {showHelp ? (
+          <Help />
+        ) : (
+          <StationList
+            stations={filteredStations}
+            selectedIndex={selectedIndex}
+            currentStationSlug={currentStation?.slug || null}
+            favorites={favorites}
+          />
+        )}
+      </Box>
 
       <Footer />
     </Box>
