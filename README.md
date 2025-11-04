@@ -11,16 +11,16 @@ A beautiful terminal-based radio player for [RadioCrestin.ro](https://radiocrest
 
 ## Features
 
-✨ **Beautiful Terminal UI** - Built with Ink (React for CLI) for a smooth, interactive experience
-🎵 **70+ Radio Stations** - Access all RadioCrestin.ro stations
-⭐ **Favorites System** - Mark your favorite stations for quick access
-🔍 **Live Search** - Filter stations as you type
-📻 **Now Playing Info** - See current song, artist, and listener count
-🎚️ **Volume Control** - Adjust volume with keyboard shortcuts
-⏯️ **Media Controls** - OS-level media keys support (play/pause/next/previous)
-🔄 **Smart Streaming** - Automatic fallback between multiple stream formats (Direct, HLS, Proxy)
-💾 **Persistent Config** - Favorites and preferences saved across sessions
-📦 **Auto-Install** - MPV downloaded automatically on first run (~30MB)
+- ✨ **Beautiful Terminal UI** - Built with Ink (React for CLI) for a smooth, interactive experience
+- 🎵 **70+ Radio Stations** - Access all RadioCrestin.ro stations
+- ⭐ **Favorites System** - Mark your favorite stations for quick access
+- 🔍 **Live Search** - Filter stations as you type
+- 📻 **Now Playing Info** - See current song, artist, and listener count
+- 🎚️ **Volume Control** - Adjust volume with keyboard shortcuts
+- ⏯️ **Media Controls** - OS-level media keys support (play/pause/next/previous)
+- 🔄 **Smart Streaming** - Automatic fallback between multiple stream formats (Direct, HLS, Proxy)
+- 💾 **Persistent Config** - Favorites and preferences saved across sessions
+- 📦 **Auto-Install** - MPV downloaded automatically on first run (~30MB)
 
 ## Installation
 
