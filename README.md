@@ -2,6 +2,8 @@
 
 A beautiful terminal-based radio player for [RadioCrestin.ro](https://radiocrestin.ro) stations. Listen to Romanian Christian radio stations directly from your command line with an intuitive interface and powerful features.
 
+[![npm version](https://img.shields.io/npm/v/radiocrestin.svg)](https://www.npmjs.com/package/radiocrestin)
+[![npm downloads](https://img.shields.io/npm/dm/radiocrestin.svg)](https://www.npmjs.com/package/radiocrestin)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 
@@ -258,6 +260,10 @@ MIT © Iosif Nicolae
 
 - Report issues: [GitHub Issues](https://github.com/iosifnicolae2/radiocrestin/issues)
 - RadioCrestin.ro: [https://radiocrestin.ro](https://radiocrestin.ro)
+
+## Related Projects
+
+- [radio-crestin/radiocrestin-cli](https://github.com/radio-crestin/radiocrestin-cli) - Alternative CLI implementation for RadioCrestin.ro
 
 ## Acknowledgments
 
