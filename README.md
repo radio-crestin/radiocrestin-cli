@@ -5,6 +5,10 @@ A beautiful terminal-based radio player for [RadioCrestin.ro](https://radiocrest
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)
 
+## Screenshot
+
+![RadioCrestin.ro CLI Player](screenshots/screenshot.png)
+
 ## Features
 
 ✨ **Beautiful Terminal UI** - Built with Ink (React for CLI) for a smooth, interactive experience
