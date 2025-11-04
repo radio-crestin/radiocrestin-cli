@@ -71,7 +71,7 @@ async function main() {
       '\n- Ensure you have a stable internet connection',
       '\n- Try running with elevated permissions',
       '\n- Check if MPV is installed correctly: mpv --version',
-      '\n- Report issues at: https://github.com/iosifnicolae2/radiocrestin-cli/issues'
+      '\n- Report issues at: https://github.com/radio-crestin/radiocrestin-cli/issues'
     );
 
     process.exit(1);
