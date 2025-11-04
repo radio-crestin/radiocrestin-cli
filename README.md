@@ -26,29 +26,23 @@ A beautiful terminal-based radio player for [RadioCrestin.ro](https://radiocrest
 
 ## Installation
 
-### Quick Start (npx - Recommended)
-
-No installation needed! Just run:
-
-```bash
-npx radiocrestin
-```
+### Installation (Recommended)
 
 The first time you run it, MPV will be downloaded automatically (~30MB). Subsequent runs are instant.
 
 ### Global Install
 
 ```bash
-npm install -g radiocrestin
+npm install -g radiocrestin@latest
 radiocrestin
 ```
 
-## Usage
+### Quick Start
 
-Simply run the command and use your keyboard to navigate:
+No installation needed! Just run:
 
 ```bash
-npx radiocrestin
+npx radiocrestin@latest
 ```
 
 ## Keyboard Shortcuts
