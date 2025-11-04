@@ -267,6 +267,8 @@ PREV script-message prev-station
     await this.sendCommand(['loadfile', url]);
     this.state.currentUrl = url;
     this.state.playing = true;
+    // Explicitly unpause mpv to ensure it starts playing
+    await this.setProperty('pause', false);
     this.state.paused = false;
     this.emit('stream-loaded', url);
   }
