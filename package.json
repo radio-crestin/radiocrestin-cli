@@ -1,6 +1,6 @@
 {
   "name": "radiocrestin",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Beautiful CLI radio player for RadioCrestin.ro stations",
   "main": "dist/index.js",
   "type": "module",
